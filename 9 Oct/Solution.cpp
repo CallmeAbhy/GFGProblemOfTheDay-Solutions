@@ -1,101 +1,125 @@
 //{ Driver Code Starts
-//
+//Initial template for C++
 
-#include <bits/stdc++.h> 
-using namespace std; 
+#include <bits/stdc++.h>
+using namespace std;
 
 struct Node
 {
     int data;
-    struct Node* next;
-    
-    Node(int x){
-        data = x;
-        next = NULL;
+    struct Node *left;
+    struct Node *right;
+
+    Node(int val) {
+        data = val;
+        left = right = NULL;
     }
-};
+}; 
 
+// Function to Build Tree
+Node* buildTree(string str)
+{   
+    // Corner Case
+    if(str.length() == 0 || str[0] == 'N')
+            return NULL;
+    
+    // Creating vector of strings from input 
+    // string after spliting by space
+    vector<string> ip;
+    
+    istringstream iss(str);
+    for(string str; iss >> str; )
+        ip.push_back(str);
+        
+    // Create the root of the tree
+    Node *root = new Node(stoi(ip[0]));
+        
+    // Push the root to the queue
+    queue<Node*> queue;
+    queue.push(root);
+        
+    // Starting from the second element
+    int i = 1;
+    while(!queue.empty() && i < ip.size()) {
+            
+        // Get and remove the front of the queue
+        Node* currNode = queue.front();
+        queue.pop();
+            
+        // Get the current node's value from the string
+        string currVal = ip[i];
+            
+        // If the left child is not null
+        if(currVal != "N") {
 
-void printList(Node* node) 
-{ 
-	while (node != NULL) { 
-		cout << node->data <<" "; 
-		node = node->next; 
-	}  
-	cout<<"\n";
+            // Create the left child for the current Node
+            currNode->left = new Node(stoi(currVal));
+                
+            // Push it to the queue
+            queue.push(currNode->left);
+        }
+            
+        // For the right child
+        i++;
+        if(i >= ip.size())
+            break;
+        currVal = ip[i];
+            
+        // If the right child is not null
+        if(currVal != "N") {
+                
+            // Create the right child for the current node
+            currNode->right = new Node(stoi(currVal));
+                
+            // Push it to the queue
+            queue.push(currNode->right);
+        }
+        i++;
+    }
+    
+    return root;
 }
 
 // } Driver Code Ends
+//User function template for C++
+
 /*
-structure of the node of the list is as
 struct Node
 {
     int data;
-    struct Node* next;
-
+    struct Node* left;
+    struct Node* right;
+    
     Node(int x){
         data = x;
-        next = NULL;
+        left = right = NULL;
     }
 };
 */
-
 class Solution{
-  public:
-    // Should return head of the modified linked list
-    Node *sortedInsert(struct Node* head, int data) {
-        // Code here
-         Node *t=head;
-        Node *prev=head;
-        Node *nn=new Node(data);
-        if(head->data>data)
-        {
-            nn->next=head;
-            return nn;
-        }
-        while( t!=NULL && t->data<=data)
-        {
-            prev=t;
-            t=t->next;
-        }
-
-        prev->next=nn;
-        nn->next=t;
-        return head;
-        // Code here
+    public:
+    //Function to find the height of a binary tree.
+    int height(struct Node* node){
+        // code here 
+        if(node == NULL) return 0;
+        
+        return max(height(node->left),height(node->right)) + 1;
     }
 };
 
-
 //{ Driver Code Starts.
-int main() 
-{ 
-	int t;
-	cin>>t;
-	while(t--)
-	{
-		int n;
-		cin>>n;
-        
-		int data;
-		cin>>data;
-		
-		struct Node *head = new Node(data);
-		struct Node *tail = head;
-		for (int i = 0; i < n-1; ++i)
-		{
-			cin>>data;
-			tail->next = new Node(data);
-			tail = tail->next;
-		}
-		
-		int k;
-		cin>>k;
-		Solution obj;
-		head = obj.sortedInsert(head,k);
-		printList(head); 
-	}
-	return 0; 
-} 
-
+int main()
+{
+    int t;
+	scanf("%d ",&t);
+    while(t--)
+    {
+        string treeString;
+		getline(cin,treeString);
+		Node* root = buildTree(treeString);
+        Solution ob;
+		cout<<ob.height(root)<<endl;
+    }
+    return 0;
+}
 // } Driver Code Ends
